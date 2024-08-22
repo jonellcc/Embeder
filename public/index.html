@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embeder CC PROJECT</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://www.hCaptcha.com/1/api.js" async defer></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Bungee");
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #a6ffcb, #12d8fa);
+            background-size: 200% 200%;
+            animation: gradientAnimation 5s infinite alternate;
+            font-family: 'Bungee', cursive;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .container {
+            max-width: 500px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .btn-light-blue {
+            background-color: #007bff;
+            color: #ffffff;
+            border-color: #007bff;
+            width: 100%;
+        }
+        .btn-light-blue:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin: 20px auto;
+            width: 50px;
+            height: 50px;
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            mix-blend-mode: overlay;
+        }
+
+        .cors-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            text-align: center;
+            color: #333;
+        }
+
+        .cors-popup p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .cors-popup button {
+            background-color: #87ceeb;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cors-popup button:hover {
+            background-color: #00bfff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">EMBEDER URL CC PROJECT</h1>
+        <form id="embedForm">
+            <div class="form-group">
+                <label for="urlInput">Website URL</label>
+                <input type="url" class="form-control" id="urlInput" placeholder="Enter website URL" required>
+            </div>
+            <div class="form-group">
+                <label for="titleInput">Title of Website</label>
+                <input type="text" class="form-control" id="titleInput" placeholder="Enter title" required>
+            </div>
+            <div class="form-group">
+                <div class="h-captcha" data-sitekey="6b5a506e-395a-46d0-8bba-77941038b772" data-callback="onCaptchaSuccess"></div>
+            </div>
+            <button type="submit" class="btn btn-light-blue" id="generateBtn" disabled>Generate Embed</button>
+        </form>
+        <div class="loading-spinner" id="loadingSpinner"></div>
+        <div id="embedLink" class="mt-4"></div>
+    </div>
+
+    <div class="watermark">Dev: Jonell Magallanes</div>
+
+    <div class="cors-popup" id="corsPopup">
+        <p>The website is not responding in Embed. This may be due to a CORS issue.</p>
+        <button id="corsPopupOk">OK</button>
+    </div>
+
+    <script>
+        function onCaptchaSuccess() {
+            document.getElementById('generateBtn').disabled = false;
+        }
+
+        document.getElementById('embedForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            const title = document.getElementById('titleInput').value;
+            const generateBtn = document.getElementById('generateBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const embedLink = document.getElementById('embedLink');
+            const corsPopup = document.getElementById('corsPopup');
+            const corsPopupOk = document.getElementById('corsPopupOk');
+
+            // Show loading spinner
+            generateBtn.disabled = true;
+            loadingSpinner.style.display = 'block';
+
+            try {
+                const response = await fetch('/generate-embed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url, title })
+                });
+
+                const result = await response.json();
+                loadingSpinner.style.display = 'none';
+
+                if (result.success) {
+                    embedLink.innerHTML = `<p>Your embed page is ready: <a href="${result.filePath}" id="embedLinkUrl">${result.filePath}</a></p>`;
+                    document.getElementById('embedLinkUrl').addEventListener('click', function(event) {
+                        event.preventDefault();
+                        embedLink.innerHTML = `<p>Redirecting...</p>`;
+                        loadingSpinner.style.display = 'block';
+                        setTimeout(() => {
+                            window.location.href = this.href;
+                        }, 3000);
+                    });
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                loadingSpinner.style.display = 'none';
+                if (error.message.toLowerCase().includes('cors')) {
+                    // Show CORS popup if CORS issue is detected
+                    corsPopup.style.display = 'block';
+                    corsPopupOk.addEventListener('click', () => {
+                        corsPopup.style.display = 'none';
+                        setTimeout(() => {
+                            corsPopup.style.display = 'block';
+                        }, 2000);
+                    });
+                } else {
+                    embedLink.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+                    generateBtn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

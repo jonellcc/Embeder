@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Bungee");
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #a6ffcb, #12d8fa);
+            animation: gradientAnimation 5s infinite alternate;
+            font-family: 'Bungee', cursive;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            height: 40px;
+            margin-right: 15px;
+        }
+
+        .logo span {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .message {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .buttons a {
+            text-decoration: none;
+            background-color: #87ceeb;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .buttons a:hover {
+            background-color: #00bfff;
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            mix-blend-mode: overlay;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://www.cjoint.com/data/NHsxRKm284Q_embed-2.png" alt="Powered by CC Embed">
+            <span>Powered by CC Embed</span>
+        </div>
+        <div class="message">404 NOT FOUND</div>
+        <div class="buttons">
+            <a href="/">Back Home</a>
+        </div>
+    </div>
+
+    <div class="watermark">Dev: Jonell Magallanes</div>
+</body>
+</html>
